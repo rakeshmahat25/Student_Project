@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Records</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ffa726 25%, #42a5f5 75%, #ab47bc 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
+            padding: 0;
+            width: 100%;
+            max-width: 600px;
+            overflow: hidden;
+            position: relative;
+            animation: slideInUp 0.8s ease-out;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ffa726 100%);
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+            animation: float 20s infinite linear;
+        }
+
+        @keyframes float {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            position: relative;
+            z-index: 1;
+            animation: bounce 1s ease-out;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        .success-icon::after {
+            content: '✓';
+            font-size: 2.5rem;
+            color: white;
+            font-weight: bold;
+        }
+
+        .message {
+            color: white;
+            font-size: 1.8rem;
+            font-weight: 300;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 1;
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .content {
+            padding: 50px 40px;
+            text-align: center;
+        }
+
+        .description {
+            color: #666;
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .action-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ffa726 100%);
+            color: white;
+            text-decoration: none;
+            padding: 18px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3);
+            position: relative;
+            overflow: hidden;
+            min-width: 180px;
+            justify-content: center;
+        }
+
+        .action-button.secondary {
+            background: linear-gradient(135deg, #42a5f5 0%, #ab47bc 100%);
+            box-shadow: 0 8px 25px rgba(66, 165, 245, 0.3);
+        }
+
+        .action-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .action-button:hover::before {
+            left: 100%;
+        }
+
+        .action-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(255, 107, 107, 0.4);
+        }
+
+        .action-button.secondary:hover {
+            box-shadow: 0 15px 40px rgba(66, 165, 245, 0.4);
+        }
+
+        .action-button:active {
+            transform: translateY(-1px);
+        }
+
+        .icon {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        /* Decorative elements */
+        .floating-shapes {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .shape {
+            position: absolute;
+            opacity: 0.1;
+            animation: floatShape 15s infinite ease-in-out;
+        }
+
+        .shape:nth-child(1) {
+            top: 20%;
+            left: 10%;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, #ff6b6b, #ffa726);
+            border-radius: 50%;
+            animation-delay: 0s;
+        }
+
+        .shape:nth-child(2) {
+            top: 60%;
+            right: 15%;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(45deg, #42a5f5, #ab47bc);
+            border-radius: 20%;
+            animation-delay: 3s;
+        }
+
+        .shape:nth-child(3) {
+            bottom: 30%;
+            left: 20%;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(45deg, #ffa726, #ff6b6b);
+            border-radius: 30%;
+            animation-delay: 6s;
+        }
+
+        @keyframes floatShape {
+            0%, 100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+            33% {
+                transform: translateY(-20px) rotate(120deg);
+            }
+            66% {
+                transform: translateY(10px) rotate(240deg);
+            }
+        }
+
+        /* Status indicator styles */
+        .status-success .success-icon::after {
+            content: '✓';
+            color: #27ae60;
+        }
+
+        .status-error .success-icon {
+            background: rgba(231, 76, 60, 0.2);
+        }
+
+        .status-error .success-icon::after {
+            content: '✕';
+            color: #e74c3c;
+        }
+
+        .status-info .success-icon {
+            background: rgba(52, 152, 219, 0.2);
+        }
+
+        .status-info .success-icon::after {
+            content: 'i';
+            color: #3498db;
+            font-family: serif;
+            font-style: italic;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+
+            .container {
+                max-width: 100%;
+            }
+
+            .header {
+                padding: 30px 25px;
+            }
+
+            .message {
+                font-size: 1.4rem;
+            }
+
+            .content {
+                padding: 40px 25px;
+            }
+
+            .button-group {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .action-button {
+                width: 100%;
+                max-width: 280px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                padding: 25px 20px;
+            }
+
+            .content {
+                padding: 30px 20px;
+            }
+
+            .message {
+                font-size: 1.2rem;
+                letter-spacing: 0.5px;
+            }
+
+            .success-icon {
+                width: 60px;
+                height: 60px;
+            }
+
+            .success-icon::after {
+                font-size: 2rem;
+            }
+
+            .action-button {
+                padding: 15px 25px;
+                font-size: 0.95rem;
+            }
+        }
+
+        /* Pulse animation for attention */
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3);
+            }
+            50% {
+                box-shadow: 0 8px 35px rgba(255, 107, 107, 0.5);
+            }
+            100% {
+                box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3);
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="floating-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+
+    <div class="header">
+        <div class="success-icon"></div>
+        <h2 class="message">Student Added Successfully!</h2>
+        <!-- For Django: <h2 class="message">{{ message }}</h2> -->
+    </div>
+
+    <div class="content">
+        <p class="description">
+            The student record has been successfully added to the database. 
+            You can now view all students or add another student record.
+        </p>
+
+        <div class="button-group">
+            <a href="#" class="action-button pulse">
+                <span class="icon">👥</span>
+                View All Students
+            </a>
+            <a href="#" class="action-button secondary">
+                <span class="icon">➕</span>
+                Add New Student
+            </a>
+        </div>
+        
+        <!-- For Django templates:
+        <div class="button-group">
+            <a href="{% url 'index' %}" class="action-button pulse">
+                <span class="icon">👥</span>
+                View All Students
+            </a>
+            <a href="{% url 'student_add' %}" class="action-button secondary">
+                <span class="icon">➕</span>
+                Add New Student
+            </a>
+        </div>
+        -->
+    </div>
+</div>
+
+<script>
+    // Add dynamic message type detection
+    document.addEventListener('DOMContentLoaded', function() {
+        const message = document.querySelector('.message').textContent.toLowerCase();
+        const container = document.querySelector('.container');
+        
+        if (message.includes('error') || message.includes('failed')) {
+            container.classList.add('status-error');
+        } else if (message.includes('info') || message.includes('notice')) {
+            container.classList.add('status-info');
+        } else {
+            container.classList.add('status-success');
+        }
+    });
+
+    // Add confetti effect for success messages
+    function createConfetti() {
+        const colors = ['#ff6b6b', '#ffa726', '#42a5f5', '#ab47bc'];
+        
+        for (let i = 0; i < 50; i++) {
+            const confetti = document.createElement('div');
+            confetti.style.position = 'fixed';
+            confetti.style.left = Math.random() * 100 + 'vw';
+            confetti.style.animationDelay = Math.random() * 3 + 's';
+            confetti.style.width = Math.random() * 10 + 5 + 'px';
+            confetti.style.height = confetti.style.width;
+            confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+            confetti.style.borderRadius = '50%';
+            confetti.style.pointerEvents = 'none';
+            confetti.style.animation = 'confettiFall 3s linear forwards';
+            confetti.style.zIndex = '1000';
+            
+            document.body.appendChild(confetti);
+            
+            setTimeout(() => {
+                confetti.remove();
+            }, 3000);
+        }
+    }
+
+    // Add confetti CSS animation
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes confettiFall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+    `;
+    document.head.appendChild(style);
+
+    // Trigger confetti on success
+    if (document.querySelector('.message').textContent.toLowerCase().includes('success')) {
+        setTimeout(createConfetti, 500);
+    }
+</script>
+
+</body>
+</html>
